@@ -205,35 +205,84 @@ class Matriz:
         return resultado
     
 
-    def intercambiar_filas(self, i, j):
-        self.matriz[i], self.matriz[j] = self.matriz[j], self.matriz[i]
-
-
-    def multiplicar_fila(self, escalar, fila):
-        n = len(self.matriz[fila])
-
-        for j in range(n):
-            self.matriz[fila][j] *= escalar
-
-
-    def sumar_multiplo_a_fila(self, fila_destino, fila_origen, escalar):
-        n = len(self.matriz[0])
-
-        for j in range(n):
-            self.matriz[fila_destino][j] += self.matriz[fila_origen][j] * escalar
-    
-
     def transponer(self):
         transpuesta = self.transpuesta()
         self.matriz = transpuesta.matriz
 
 
+    def copiar(self):
+        '''
+        Devuelve una copia de la matriz.
+        '''
+        n = self.row
+        m = self.column
+
+        copia = Matriz(n, m)
+
+        for i in range(n):
+            for j in range(m):
+                copia.matriz[i][j] = self.matriz[i][j]
+
+        return copia
+    
+
+    def intercambiar_filas(self, i, j):
+        self.matriz[i], self.matriz[j] = self.matriz[j], self.matriz[i]
+
+
+    def multiplicar_fila(self, escalar, fila):
+        if escalar != 0:
+            n = len(self.matriz[fila])
+
+            for j in range(n):
+                self.matriz[fila][j] *= escalar
+
+
+    def sumar_multiplo_a_fila(self, fila_destino, fila_origen, escalar):
+        if escalar != 0:
+            n = len(self.matriz[0])
+
+            for j in range(n):
+                self.matriz[fila_destino][j] += self.matriz[fila_origen][j] * escalar
+
+
     def inversa(self):
-        pass
+        '''
+        Devuelve la inversa de la matriz, aplicando operaciones elementales sucesivas.
+        '''
+        matriz_inversa = None
+
+        if self.es_cuadrada() and self.determinante() != 0:
+            n = self.row
+            m = self.row
+
+            matriz_inicial = self.copiar()
+            matriz_inversa = Matriz.identidad(n)
+
+            # Recorro la matriz por columnas. Ignoro los elementos de la diagonal principal.
+            for j in range(n):
+                for i in range(m):
+                    if i != j:
+                        k = (-1) * matriz_inicial.matriz[i][j] / matriz_inicial.matriz[j][j]
+                        matriz_inicial.sumar_multiplo_a_fila(i, j, k)
+                        matriz_inversa.sumar_multiplo_a_fila(i, j, k)
+
+            # Opero sobre los elementos de la diagonal principal que faltaron.
+            # Los demás elementos se ignoran ya que valen 0.
+            for i in range(n):
+                k = 1 / matriz_inicial.matriz[i][i]
+                matriz_inicial.multiplicar_fila(k, i)
+                matriz_inversa.multiplicar_fila(k, i)
+
+        return matriz_inversa
 
 
     def invertir(self):
-        pass
+        '''
+        Invierte la propia matriz.
+        '''
+        inversa = self.inversa()
+        self.matriz = inversa.matriz
 
 
     @classmethod
