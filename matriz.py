@@ -1,13 +1,45 @@
 import random
 
 class Matriz:
-    def __init__(self, row, column):
-        self.row = row
-        self.column = column
-        self.matriz = [[0] * column for _ in range(row)]
+    # Constructor
+    def __init__(self, row: int, column: int) -> None:
+        self._row = row
+        self._column = column
+        self._matriz = [[0] * column for _ in range(row)]
+
+    # Setters, getters y deleters
+    @property
+    def row(self) -> int:
+        return self._row
+    
+
+    @row.setter
+    def row(self, numero_filas: int) -> None:
+        self._row = numero_filas
 
 
-    def __str__(self):
+    @property
+    def column(self) -> int:
+        return self._column
+    
+
+    @column.setter
+    def column(self, numero_columnas: int) -> None:
+        self._column = numero_columnas
+
+
+    @property
+    def matriz(self) -> list[list[int]]:
+        return self._matriz
+    
+
+    @matriz.setter
+    def matriz(self, una_lista: list[list[int]]):  # La matriz propiamente dicha se guarda como una lista de listas -> un vector de vectores.
+        self._matriz = una_lista
+
+
+    # Métodos mágicos
+    def __str__(self) -> str:
         n = len(self.matriz)
         m = len(self.matriz[0])
         h_mayor = self.max_digit()
@@ -29,7 +61,7 @@ class Matriz:
         return mensaje
 
 
-    def __add__(self, matriz):
+    def __add__(self, matriz: 'Matriz') -> 'Matriz':
         if self.row == matriz.row and self.column == matriz.column:
             suma = Matriz(self.row, self.column)
 
@@ -42,8 +74,8 @@ class Matriz:
         return suma
     
 
-    def __sub__(self, otra_matriz):
-        if self.suma_es_conformable(otra_matriz):
+    def __sub__(self, otra_matriz: 'Matriz') -> 'Matriz':
+        if self.suma_es_conformable_con(otra_matriz):
             suma = Matriz(self.row, self.column)
 
             for i in range(self.row):
@@ -55,7 +87,7 @@ class Matriz:
         return suma
     
     
-    def __mul__(self, otra_matriz):
+    def __mul__(self, otra_matriz: 'Matriz') -> 'Matriz':
         resultado = None
 
         if type(otra_matriz) == type(int()) or type(otra_matriz) == type(float()):
@@ -64,13 +96,13 @@ class Matriz:
             resultado = self.producto_escalar(k)
 
         elif type(otra_matriz) == type(Matriz(1,1)):
-            if self.producto_es_conformable(otra_matriz):
+            if self.producto_es_conformable_con(otra_matriz):
                 resultado = self.producto_matricial(otra_matriz)
 
         return resultado
     
 
-    def __rmul__(self, otra_matriz):
+    def __rmul__(self, otra_matriz: 'Matriz') -> 'Matriz':
         resultado = None
 
         if type(otra_matriz) == type(int()) or type(otra_matriz) == type(float()):
@@ -81,49 +113,49 @@ class Matriz:
         return resultado
 
 
-    def es_cuadrada(self):
+    def __eq__(self, otra_matriz: 'Matriz') -> bool:
+        flag = True
+
+        if self.tiene_igual_tamaño_que(otra_matriz):
+            n = self.row
+            m = self.column
+            
+            for i in range(n):
+                for j in range(m):
+                    if self.matriz[i][j] != otra_matriz.matriz[i][j]:
+                        flag = False
+                        break 
+        else:
+            flag = False
+
+        return flag
+
+
+    # Métodos regulares
+    def tiene_igual_tamaño_que(self, otra_matriz: 'Matriz') -> bool:
+        return self.row == otra_matriz.row and self.column == otra_matriz.column
+
+
+    def es_cuadrada(self) -> bool:
         return self.row == self.column
     
 
-    def producto_es_conformable(self, otra_matriz):
+    def producto_es_conformable_con(self, otra_matriz: 'Matriz') -> bool:
         return self.column == otra_matriz.row
     
 
-    def suma_es_conformable(self, otra_matriz):
+    def suma_es_conformable_con(self, otra_matriz: 'Matriz') -> bool:
         return self.row == otra_matriz.row and self.column == otra_matriz.column
     
 
-    @property
-    def row(self):
-        return self._row
-    
+    def es_ortogonal(self) -> bool:
+        matriz_inversa = self.inversa()
+        matriz_transpuesta = self.transpuesta()
 
-    @row.setter
-    def row(self, numero_filas):
-        self._row = numero_filas
+        return matriz_inversa == matriz_transpuesta
 
 
-    @property
-    def column(self):
-        return self._column
-    
-
-    @column.setter
-    def column(self, numero_columnas):
-        self._column = numero_columnas
-
-
-    @property
-    def matriz(self):
-        return self._matriz
-    
-
-    @matriz.setter
-    def matriz(self, una_lista):  # La matriz propiamente dicha se guarda como una lista de listas -> un vector de vectores.
-        self._matriz = una_lista
-
-
-    def submatriz(self, i_pivot, j_pivot):
+    def submatriz(self, i_pivot: int, j_pivot: int) -> 'Matriz':
         '''
         Devuelve una matriz de orden n-1 a partir de otra de orden n...
         '''
@@ -148,7 +180,7 @@ class Matriz:
         return submatriz
 
 
-    def rango(self):
+    def rango(self) -> int:
         rango = None
         if self.es_cuadrada():
             rango = self.row
@@ -156,7 +188,7 @@ class Matriz:
         return rango
 
 
-    def determinante(self):
+    def determinante(self) -> int:
         valor_determinante = 0
         rango = self.rango()
 
@@ -171,7 +203,7 @@ class Matriz:
         return valor_determinante
 
 
-    def producto_escalar(self, k):
+    def producto_escalar(self, k: int) -> 'Matriz':
         resultado = Matriz(self.row, self.column)
 
         for i in range(self.row):
@@ -181,10 +213,10 @@ class Matriz:
         return resultado
     
 
-    def producto_matricial(self, otra_matriz):
+    def producto_matricial(self, otra_matriz: 'Matriz') -> 'Matriz':
         resultado = None
 
-        if self.producto_es_conformable(otra_matriz):
+        if self.producto_es_conformable_con(otra_matriz):
             resultado = Matriz(self.row, otra_matriz.column)
 
             for i in range(resultado.row):
@@ -195,7 +227,7 @@ class Matriz:
         return resultado
     
 
-    def transpuesta(self):
+    def transpuesta(self) -> 'Matriz':
         resultado = Matriz(self.row, self.column)
 
         for i in range(self.row):
@@ -205,12 +237,12 @@ class Matriz:
         return resultado
     
 
-    def transponer(self):
+    def transponer(self) -> None:
         transpuesta = self.transpuesta()
         self.matriz = transpuesta.matriz
 
 
-    def copiar(self):
+    def copiar(self) -> 'Matriz':
         '''
         Devuelve una copia de la matriz.
         '''
@@ -226,11 +258,11 @@ class Matriz:
         return copia
     
 
-    def intercambiar_filas(self, i, j):
+    def intercambiar_filas(self, i: int, j: int) -> None:
         self.matriz[i], self.matriz[j] = self.matriz[j], self.matriz[i]
 
 
-    def multiplicar_fila(self, escalar, fila):
+    def multiplicar_fila(self, escalar: float, fila: int) -> None:
         if escalar != 0:
             n = len(self.matriz[fila])
 
@@ -238,7 +270,7 @@ class Matriz:
                 self.matriz[fila][j] *= escalar
 
 
-    def sumar_multiplo_a_fila(self, fila_destino, fila_origen, escalar):
+    def sumar_multiplo_a_fila(self, fila_destino: int, fila_origen: int, escalar: float) -> None:
         if escalar != 0:
             n = len(self.matriz[0])
 
@@ -246,7 +278,7 @@ class Matriz:
                 self.matriz[fila_destino][j] += self.matriz[fila_origen][j] * escalar
 
 
-    def inversa(self):
+    def inversa(self) -> 'Matriz':
         '''
         Devuelve la inversa de la matriz, aplicando operaciones elementales sucesivas.
         '''
@@ -277,7 +309,7 @@ class Matriz:
         return matriz_inversa
 
 
-    def invertir(self):
+    def invertir(self) -> None:
         '''
         Invierte la propia matriz.
         '''
@@ -286,7 +318,7 @@ class Matriz:
 
 
     @classmethod
-    def nula(cls, n, m):
+    def nula(cls, n: int, m: int) -> 'Matriz':
         matriz_nula = cls(n, m)
 
         for i in range(n):
@@ -297,7 +329,7 @@ class Matriz:
 
 
     @classmethod
-    def identidad(cls, n):
+    def identidad(cls, n: int) -> 'Matriz':
         matriz_identidad = cls(n, n)
 
         for i in range(n):
@@ -311,7 +343,7 @@ class Matriz:
 
 
     @classmethod
-    def random(cls, n, m):
+    def random(cls, n: int, m: int) -> 'Matriz':
         matriz_random = cls(n, m)
 
         for i in range(n):
@@ -321,13 +353,14 @@ class Matriz:
         return matriz_random
     
 
-    def ingresar_matriz(self):
-        for i in range(self.row):
-            for j in range(self.column):
-                valor = int(input(f'Ingrese el elemento {i+1}{j+1}: '))
-                self.matriz[i][j] = valor
+    def ingresar_matriz(self) -> None:
+        n = self.row
+        m = self.column
 
-            print()
+        for i in range(n):
+            for j in range(m):
+                valor = float(input(f'Ingrese el elemento {i+1}{j+1}: '))
+                self.matriz[i][j] = valor
     
 
     def max_digit(self) -> int:

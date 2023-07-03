@@ -10,16 +10,14 @@ def main():
 
 
 def test():
-    matriz = Matriz(3, 3)
-    matriz.matriz = [[3, 0, 1],
-                     [0, 5, 0],
-                     [-1, 1, -1]]
-    
-    print(matriz)
-    matriz.invertir()
-    matriz.invertir()
+    matriz_a = Matriz(3, 3)
+    matriz_b = Matriz(3, 3)
+    matriz_c = Matriz.identidad(3)
+    matriz_d = Matriz.identidad(4)
 
-    print(matriz)
+    print(matriz_a != matriz_b)
+    print(matriz_a != matriz_c)
+    print(matriz_a != matriz_d)
 
 
 if __name__ == '__main__':
