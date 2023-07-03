@@ -3,31 +3,9 @@ import random
 class Matriz:
     # Constructor
     def __init__(self, row: int, column: int) -> None:
-        self._row = row
-        self._column = column
         self._matriz = [[0] * column for _ in range(row)]
 
     # Setters, getters y deleters
-    @property
-    def row(self) -> int:
-        return self._row
-    
-
-    @row.setter
-    def row(self, numero_filas: int) -> None:
-        self._row = numero_filas
-
-
-    @property
-    def column(self) -> int:
-        return self._column
-    
-
-    @column.setter
-    def column(self, numero_columnas: int) -> None:
-        self._column = numero_columnas
-
-
     @property
     def matriz(self) -> list[list[int]]:
         return self._matriz
@@ -62,11 +40,11 @@ class Matriz:
 
 
     def __add__(self, matriz: 'Matriz') -> 'Matriz':
-        if self.row == matriz.row and self.column == matriz.column:
-            suma = Matriz(self.row, self.column)
+        if self.filas() == matriz.filas() and self.columnas() == matriz.columnas():
+            suma = Matriz(self.filas(), self.columnas())
 
-            for i in range(self.row):
-                for j in range(self.column):
+            for i in range(self.filas()):
+                for j in range(self.columnas()):
                     suma.matriz[i][j] = self.matriz[i][j] + matriz.matriz[i][j]
         else:
             suma = None
@@ -76,10 +54,10 @@ class Matriz:
 
     def __sub__(self, otra_matriz: 'Matriz') -> 'Matriz':
         if self.suma_es_conformable_con(otra_matriz):
-            suma = Matriz(self.row, self.column)
+            suma = Matriz(self.filas(), self.columnas())
 
-            for i in range(self.row):
-                for j in range(self.column):
+            for i in range(self.filas()):
+                for j in range(self.columnas()):
                     suma.matriz[i][j] = self.matriz[i][j] - otra_matriz.matriz[i][j]
         else:
             suma = None
@@ -91,7 +69,7 @@ class Matriz:
         resultado = None
 
         if type(otra_matriz) == type(int()) or type(otra_matriz) == type(float()):
-            resultado = Matriz(self.row, self.column)
+            resultado = Matriz(self.filas(), self.columnas())
             k = otra_matriz
             resultado = self.producto_escalar(k)
 
@@ -106,7 +84,7 @@ class Matriz:
         resultado = None
 
         if type(otra_matriz) == type(int()) or type(otra_matriz) == type(float()):
-            resultado = Matriz(self.row, self.column)
+            resultado = Matriz(self.filas(), self.columnas())
             k = otra_matriz
             resultado = self.producto_escalar(k)
 
@@ -117,8 +95,8 @@ class Matriz:
         flag = True
 
         if self.tiene_igual_tamaño_que(otra_matriz):
-            n = self.row
-            m = self.column
+            n = self.filas()
+            m = self.columnas()
             
             for i in range(n):
                 for j in range(m):
@@ -131,21 +109,21 @@ class Matriz:
         return flag
 
 
-    # Métodos regulares
+    # Métodos regulares booleanos
     def tiene_igual_tamaño_que(self, otra_matriz: 'Matriz') -> bool:
-        return self.row == otra_matriz.row and self.column == otra_matriz.column
+        return self.filas() == otra_matriz.filas() and self.columnas() == otra_matriz.columnas()
 
 
     def es_cuadrada(self) -> bool:
-        return self.row == self.column
+        return self.filas() == self.columnas()
     
 
     def producto_es_conformable_con(self, otra_matriz: 'Matriz') -> bool:
-        return self.column == otra_matriz.row
+        return self.columnas() == otra_matriz.filas()
     
 
     def suma_es_conformable_con(self, otra_matriz: 'Matriz') -> bool:
-        return self.row == otra_matriz.row and self.column == otra_matriz.column
+        return self.filas() == otra_matriz.filas() and self.columnas() == otra_matriz.columnas()
     
 
     def es_ortogonal(self) -> bool:
@@ -155,13 +133,22 @@ class Matriz:
         return matriz_inversa == matriz_transpuesta
 
 
+    # Métodos regulares
+    def filas(self) -> int:
+        return len(self.matriz)
+    
+
+    def columnas(self) -> int:
+        return len(self.matriz[0])
+
+
     def submatriz(self, i_pivot: int, j_pivot: int) -> 'Matriz':
         '''
         Devuelve una matriz de orden n-1 a partir de otra de orden n...
         '''
 
-        n = self.row
-        m = self.column
+        n = self.filas()
+        m = self.columnas()
 
         submatriz = Matriz(n-1, m-1)
         r = 0
@@ -183,7 +170,7 @@ class Matriz:
     def rango(self) -> int:
         rango = None
         if self.es_cuadrada():
-            rango = self.row
+            rango = self.filas()
 
         return rango
 
@@ -198,16 +185,21 @@ class Matriz:
             else:  # Caso recursivo: Det(M(n)) = C(1j) * Det(M(n-1))
                 for j in range(rango):
                     submatriz = self.submatriz(0, j)
-                    valor_determinante += self.matriz[0][j] * (-1)**(1 + (j+1)) * submatriz.determinante()
+
+                    # Verifica si el elemento seleccionado es cero para evitar realizar llamadas sucesivas...
+                    if self.matriz[0][j] != 0:
+                        valor_determinante += self.matriz[0][j] * (-1)**(1 + (j+1)) * submatriz.determinante()
+                    else:
+                        valor_determinante += 0
 
         return valor_determinante
 
 
     def producto_escalar(self, k: int) -> 'Matriz':
-        resultado = Matriz(self.row, self.column)
+        resultado = Matriz(self.filas(), self.columnas())
 
-        for i in range(self.row):
-                for j in range(self.column):
+        for i in range(self.filas()):
+                for j in range(self.columnas()):
                     resultado.matriz[i][j] = self.matriz[i][j] * k
 
         return resultado
@@ -217,21 +209,21 @@ class Matriz:
         resultado = None
 
         if self.producto_es_conformable_con(otra_matriz):
-            resultado = Matriz(self.row, otra_matriz.column)
+            resultado = Matriz(self.filas(), otra_matriz.columnas())
 
-            for i in range(resultado.row):
-                for j in range(resultado.column):
-                    for k in range(otra_matriz.row):
+            for i in range(resultado.filas()):
+                for j in range(resultado.columnas()):
+                    for k in range(otra_matriz.filas()):
                         resultado.matriz[i][j] += self.matriz[i][k] * otra_matriz.matriz[k][j]
 
         return resultado
     
 
     def transpuesta(self) -> 'Matriz':
-        resultado = Matriz(self.row, self.column)
+        resultado = Matriz(self.filas(), self.columnas())
 
-        for i in range(self.row):
-            for j in range(self.column):
+        for i in range(self.filas()):
+            for j in range(self.columnas()):
                 resultado.matriz[i][j] = self.matriz[j][i]
 
         return resultado
@@ -246,8 +238,8 @@ class Matriz:
         '''
         Devuelve una copia de la matriz.
         '''
-        n = self.row
-        m = self.column
+        n = self.filas()
+        m = self.columnas()
 
         copia = Matriz(n, m)
 
@@ -285,8 +277,8 @@ class Matriz:
         matriz_inversa = None
 
         if self.es_cuadrada() and self.determinante() != 0:
-            n = self.row
-            m = self.row
+            n = self.filas()
+            m = self.filas()
 
             matriz_inicial = self.copiar()
             matriz_inversa = Matriz.identidad(n)
@@ -333,11 +325,7 @@ class Matriz:
         matriz_identidad = cls(n, n)
 
         for i in range(n):
-            for j in range(n):
-                if i == j:
-                    matriz_identidad.matriz[i][j] = 1
-                else:
-                    matriz_identidad.matriz[i][j] = 0
+            matriz_identidad.matriz[i][i] = 1
 
         return matriz_identidad
 
@@ -354,8 +342,8 @@ class Matriz:
     
 
     def ingresar_matriz(self) -> None:
-        n = self.row
-        m = self.column
+        n = self.filas()
+        m = self.columnas()
 
         for i in range(n):
             for j in range(m):

@@ -10,14 +10,8 @@ def main():
 
 
 def test():
-    matriz_a = Matriz(3, 3)
-    matriz_b = Matriz(3, 3)
-    matriz_c = Matriz.identidad(3)
-    matriz_d = Matriz.identidad(4)
-
-    print(matriz_a != matriz_b)
-    print(matriz_a != matriz_c)
-    print(matriz_a != matriz_d)
+    matriz = Matriz.identidad(15)
+    print(matriz)
 
 
 if __name__ == '__main__':
