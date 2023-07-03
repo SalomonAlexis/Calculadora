@@ -18,8 +18,8 @@ class Matriz:
 
     # Métodos mágicos
     def __str__(self) -> str:
-        n = len(self.matriz)
-        m = len(self.matriz[0])
+        n = self.filas()
+        m = self.columnas()
         h_mayor = self.max_digit()
 
         mensaje = ''
