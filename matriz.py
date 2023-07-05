@@ -12,7 +12,7 @@ class Matriz:
     
 
     @matriz.setter
-    def matriz(self, una_lista: list[list[int]]):  # La matriz propiamente dicha se guarda como una lista de listas -> un vector de vectores.
+    def matriz(self, una_lista: list[list[int]]) -> None:  # La matriz propiamente dicha se guarda como una lista de listas -> un vector de vectores.
         self._matriz = una_lista
 
 
@@ -39,13 +39,13 @@ class Matriz:
         return mensaje
 
 
-    def __add__(self, matriz: 'Matriz') -> 'Matriz':
-        if self.filas() == matriz.filas() and self.columnas() == matriz.columnas():
+    def __add__(self, otra_matriz: 'Matriz') -> 'Matriz':
+        if self.suma_es_conformable_con(otra_matriz):
             suma = Matriz(self.filas(), self.columnas())
 
             for i in range(self.filas()):
                 for j in range(self.columnas()):
-                    suma.matriz[i][j] = self.matriz[i][j] + matriz.matriz[i][j]
+                    suma.matriz[i][j] = self.matriz[i][j] + otra_matriz.matriz[i][j]
         else:
             suma = None
 
@@ -368,3 +368,11 @@ class Matriz:
                     mayor = len(str(round(self.matriz[i][j], 2)))
 
         return mayor
+
+
+    def es_entero(self, i, j) -> bool:
+        '''
+        Retorna Verdadero si el número es un entero.
+        Se usa para mostrar la matriz un poco mas prolija.
+        '''
+        return (self.matriz[i][j] - int(self.matriz[i][j])) == 0
