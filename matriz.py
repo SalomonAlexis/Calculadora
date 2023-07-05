@@ -5,6 +5,7 @@ class Matriz:
     def __init__(self, row: int, column: int) -> None:
         self._matriz = [[0] * column for _ in range(row)]
 
+
     # Setters, getters y deleters
     @property
     def matriz(self) -> list[list[int]]:
@@ -21,18 +22,18 @@ class Matriz:
         n = self.filas()
         m = self.columnas()
         h_mayor = self.max_digit()
-
+        n_digitos_redondeo = 3
         mensaje = ''
 
         for i in range(n):
             for j in range(m):
                 mensaje += " "
 
-                h = len(str(round(self.matriz[i][j], 2)))  # Determina el número de dígitos del elemento ij de la matriz.
+                h = len(str(round(self.matriz[i][j], n_digitos_redondeo)))  # Determina el número de dígitos del elemento ij de la matriz.
                 for k in range(h_mayor-h):
                     mensaje += " "
 
-                mensaje += str(round(self.matriz[i][j], 2))
+                mensaje += str(round(self.matriz[i][j], n_digitos_redondeo))
                 mensaje += " "
             mensaje += "\n"
 
@@ -356,6 +357,8 @@ class Matriz:
         '''
         Devuelve el número de dígitos del elemento de la matriz que tenga más dígitos.
         '''
+        self.emprolijar()
+        n_digitos_redondeo = 3
 
         n = len(self.matriz)  # Número de filas
         m = len(self.matriz[0]) # Número de columnas
@@ -364,8 +367,8 @@ class Matriz:
 
         for i in range(n):
             for j in range(m):
-                if mayor is None or len(str(round(self.matriz[i][j], 2))) > mayor:
-                    mayor = len(str(round(self.matriz[i][j], 2)))
+                if mayor is None or len(str(round(self.matriz[i][j], n_digitos_redondeo))) > mayor:
+                    mayor = len(str(round(self.matriz[i][j], n_digitos_redondeo)))
 
         return mayor
 
@@ -375,4 +378,14 @@ class Matriz:
         Retorna Verdadero si el número es un entero.
         Se usa para mostrar la matriz un poco mas prolija.
         '''
-        return (self.matriz[i][j] - int(self.matriz[i][j])) == 0
+        return (abs(round(self.matriz[i][j], 4))) - abs(int(round(self.matriz[i][j], 4))) == 0
+    
+
+    def emprolijar(self) -> None:
+        n = self.filas()
+        m = self.columnas()
+        
+        for i in range(n):
+            for j in range(m):
+                if self.es_entero(i, j):
+                    self.matriz[i][j] = int(round(self.matriz[i][j], 0))

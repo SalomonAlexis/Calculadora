@@ -10,11 +10,13 @@ def main():
 
 
 def test():
-    matriz = Matriz(15,15)
-    matriz_b = Matriz.nula(16, 9)
-
+    matriz = Matriz(3, 3)
+    matriz.matriz = [[-2, -3, -2], [1, 3, -2], [-1, -6, 4]]
     print(matriz)
-    print(matriz_b)
+
+    matriz.invertir()
+    print(matriz)
+
 
 
 if __name__ == '__main__':
