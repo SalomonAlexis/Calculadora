@@ -21,8 +21,9 @@ class Matriz:
     def __str__(self) -> str:
         n = self.filas()
         m = self.columnas()
-        h_mayor = self.max_digit()
+
         n_digitos_redondeo = 3
+        h_mayor = self.max_digit(n_digitos_redondeo)
         mensaje = ''
 
         for i in range(n):
@@ -353,12 +354,11 @@ class Matriz:
                 self.matriz[i][j] = valor
     
 
-    def max_digit(self) -> int:
+    def max_digit(self, n_digitos_redondeo: int=3) -> int:
         '''
         Devuelve el número de dígitos del elemento de la matriz que tenga más dígitos.
         '''
         self.emprolijar()
-        n_digitos_redondeo = 3
 
         n = len(self.matriz)  # Número de filas
         m = len(self.matriz[0]) # Número de columnas
