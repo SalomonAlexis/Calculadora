@@ -1,0 +1,1 @@
+# Algunas funciones generales
