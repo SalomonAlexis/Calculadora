@@ -284,6 +284,7 @@ class Matriz:
             matriz_inversa = Matriz.identidad(n)
 
             # Recorro la matriz por columnas. Ignoro los elementos de la diagonal principal.
+            # Aplico misma operación a ambas matrices.
             for j in range(n):
                 for i in range(m):
                     if i != j:
@@ -312,11 +313,11 @@ class Matriz:
     @classmethod
     def nula(cls, n: int, m: int) -> 'Matriz':
         matriz_nula = cls(n, m)
-
+        '''
         for i in range(n):
             for j in range(m):
                 matriz_nula.matriz[i][j] = 0
-
+        '''
         return matriz_nula
 
 

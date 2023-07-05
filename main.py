@@ -10,8 +10,11 @@ def main():
 
 
 def test():
-    matriz = Matriz.identidad(15)
+    matriz = Matriz(15,15)
+    matriz_b = Matriz.nula(16, 9)
+
     print(matriz)
+    print(matriz_b)
 
 
 if __name__ == '__main__':
