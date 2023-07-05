@@ -1,7 +1,7 @@
 import random
 
 class Matriz:
-    # Constructor
+    # Constructor/inicializador
     def __init__(self, row: int, column: int) -> None:
         self._matriz = [[0] * column for _ in range(row)]
 
@@ -91,6 +91,18 @@ class Matriz:
             resultado = self.producto_escalar(k)
 
         return resultado
+    
+
+    def __pow__(self, exponente: int) -> 'Matriz':
+        resultado = None
+
+        if self.es_cuadrada():
+            resultado = self.copiar()
+
+            for i in range(1, exponente):
+                resultado *= self
+
+        return resultado
 
 
     def __eq__(self, otra_matriz: 'Matriz') -> bool:
@@ -170,10 +182,15 @@ class Matriz:
 
 
     def rango(self) -> int:
-        rango = None
-        if self.es_cuadrada():
-            rango = self.filas()
+        '''
+        Incompleto
+        '''
 
+        rango = None
+
+        if self.es_cuadrada() and self.determinante != 0:
+            rango = self.filas()
+    
         return rango
 
 
@@ -310,6 +327,39 @@ class Matriz:
         '''
         inversa = self.inversa()
         self.matriz = inversa.matriz
+
+
+    def escalonada(self) -> 'Matriz':
+        matriz_escalonada = None
+        
+        if self.es_cuadrada():
+            n = self.filas()
+            m = self.filas()
+
+            matriz_escalonada = self.copiar()
+
+            # Recorro la matriz por columnas. Ignoro los elementos de la diagonal principal.
+            for j in range(n):
+                for i in range(m):
+                    if i > j:
+                        if matriz_escalonada.matriz[j][j] != 0:
+                            k = (-1) * matriz_escalonada.matriz[i][j] / matriz_escalonada.matriz[j][j]
+                            matriz_escalonada.sumar_multiplo_a_fila(i, j, k)
+
+            '''
+            # Opero sobre los elementos de la diagonal principal que faltaron.
+            # Los demás elementos se ignoran ya que valen 0.
+            for i in range(n):
+                k = 1 / matriz_inicial.matriz[i][i]
+                matriz_inicial.multiplicar_fila(k, i)
+            '''
+            
+        return matriz_escalonada
+    
+
+    def escalonar(self) -> None:
+        escalonada = self.escalonada()
+        self.matriz = escalonada.matriz
 
 
     @classmethod

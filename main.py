@@ -10,12 +10,12 @@ def main():
 
 
 def test():
-    matriz = Matriz(3, 3)
-    matriz.matriz = [[2, -4, 5], [3, -1, 2], [4, 1, 6]]
-    print(matriz)
+    matriz_a = Matriz(3, 3)
+    matriz_a.matriz = [[1, 1, 1, 1], [2, 5, -1, 2], [3, 1, 1, 3], [4, 4, 4, 4]]
+    print(matriz_a)
 
-    matriz.invertir()
-    print(matriz)
+    matriz_a.escalonar()
+    print(matriz_a)
 
 
 
