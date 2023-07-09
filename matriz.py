@@ -8,13 +8,38 @@ class Matriz:
 
     # Setters, getters y deleters
     @property
-    def matriz(self) -> list[list[int]]:
+    def matriz(self) -> list[list[int | float | complex]]:
         return self._matriz
     
 
     @matriz.setter
-    def matriz(self, una_lista: list[list[int]]) -> None:  # La matriz propiamente dicha se guarda como una lista de listas -> un vector de vectores.
+    def matriz(self, una_lista: list[list[int | float | complex]]) -> None:  # La matriz propiamente dicha se guarda como una lista de listas -> un vector de vectores.
         self._matriz = una_lista
+
+
+    '''
+    def agregar_vector(self, vector_string: str) -> None:
+        pass
+    '''
+
+    @staticmethod
+    def string_a_vector(vector_string: str) -> list[int | float | complex]:
+        vector = vector_string.split(" ")
+        n = len(vector)
+
+        for i in range(n):
+            vector[i] = int(vector[i]) if Matriz.es_entero(vector[i]) else float(vector[i])
+
+        return vector
+    
+
+    @staticmethod
+    def es_entero(valor: int | float) -> bool:
+        '''
+        Retorna Verdadero si el número es un entero.
+        Se usa para mostrar la matriz un poco mas prolija.
+        '''
+        return (abs(round(valor, 4))) - abs(int(round(valor, 4))) == 0
 
 
     # Métodos mágicos
@@ -421,14 +446,6 @@ class Matriz:
                     mayor = len(str(round(self.matriz[i][j], n_digitos_redondeo)))
 
         return mayor
-
-
-    def es_entero(self, i, j) -> bool:
-        '''
-        Retorna Verdadero si el número es un entero.
-        Se usa para mostrar la matriz un poco mas prolija.
-        '''
-        return (abs(round(self.matriz[i][j], 4))) - abs(int(round(self.matriz[i][j], 4))) == 0
     
 
     def emprolijar(self) -> None:
@@ -437,5 +454,5 @@ class Matriz:
         
         for i in range(n):
             for j in range(m):
-                if self.es_entero(i, j):
+                if self.es_entero(self.matriz[i][j]):
                     self.matriz[i][j] = int(round(self.matriz[i][j], 0))
